@@ -1,0 +1,1 @@
+insert into user values ('123456', 'kuba', 'domagala', '1234', 'kuba' );

@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -11,6 +13,8 @@ import javax.persistence.OneToMany;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -18,29 +22,24 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
-public class User {
+public class User implements UserDetails {
 
+    private String username;
     private String firstName;
     private String lastName;
     @Id
     private String uuid;
-    private byte pinHash[]; // MD5 hash of pin number
+    private String pin;
 
     @OneToMany
     private List<Account> accounts;
 
-    public User(String firstName, String lastName, String pin, Bank theBank) {
-        this.firstName = firstName;
+    public User(String username, String firstName, String lastName, String pin, Bank theBank) {
+      this.username = username;
+       this.firstName = firstName;
         this.lastName = lastName;
+        this.pin = pin;
 
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            this.pinHash = md.digest(pin.getBytes());
-        } catch (NoSuchAlgorithmException e) {
-            System.err.println("errpr, cought NoSuchAlgorithmException");
-            e.printStackTrace();
-            System.exit(1);
-        }
 
         this.uuid = theBank.getNewUserUUID();
 
@@ -55,4 +54,38 @@ public class User {
         return uuid;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.EMPTY_LIST;
+    }
+
+    @Override
+    public String getPassword() {
+        return pin;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
