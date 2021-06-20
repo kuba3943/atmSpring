@@ -11,8 +11,7 @@ public class BankService {
 
     private final BankRepository bankRepository;
 
-    public Bank createBank(String name){
-        Bank newBank = new Bank(name);
-        return bankRepository.save(newBank);
+    public Bank createBank(Bank bank){
+        return bankRepository.save(bank);
     }
 }

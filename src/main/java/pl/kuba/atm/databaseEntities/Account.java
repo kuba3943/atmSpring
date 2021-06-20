@@ -32,7 +32,4 @@ public class Account {
         this.transactions = new ArrayList<>();
     }
 
-    public String getUUID() {
-        return uuid;
-    }
 }

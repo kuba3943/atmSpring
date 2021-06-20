@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Accounts</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="css/styles.css" rel="stylesheet" />
+</head>
+<body>
+<div class="d-flex" id="wrapper">
+    <!-- Sidebar-->
+    <div class="border-end bg-white" id="sidebar-wrapper">
+        <div class="sidebar-heading border-bottom bg-light">JD-Bank</div>
+        <div class="list-group list-group-flush">
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="account">Accounts</a>
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/logout">Logout</a>
+        </div>
+    </div>
+    <!-- Page content wrapper-->
+    <div id="page-content-wrapper">
+        <!-- Top navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+            <div class="container-fluid">
+                <button class="btn btn-primary" id="sidebarToggle">Hide Menu</button>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+
+            </div>
+        </nav>
+        <!-- Page content-->
+        <div class="container-fluid">
+            <form class="form-signin" method="post" th:object="${transaction}" action="#" th:action="@{/withdraw}">
+                <div class="form-group">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <h4>Amount:</h4>
+                            <input class="form-control" name="amount" id="amount" th:field="*{amount}"
+                                   type="number" min="0" th:max="${balance}" step="1" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <h4>Title:</h4>
+                            <input class="form-control" name="title" id="title" th:field="*{memo}"
+                                   type="text" />
+                        </div>
+                    </div>
+
+                    <input type="hidden" class="form-check-input" th:value="${data}"  th:field = "*{timestamp}">
+
+
+                </div>
+
+                <br>
+                <button class="btn btn-lg btn-danger btn-block" type="submit"  th:name= "uuid" th:value="${account.getUuid()}">Withdraw</button>
+
+            </form>
+
+
+        </div>
+
+    </div>
+</div>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="js/scripts.js"></script>
+</body>
+</html>

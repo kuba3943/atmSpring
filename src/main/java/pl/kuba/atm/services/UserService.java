@@ -30,6 +30,10 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(()-> new UsernameNotFoundException("Username not found in database!"));
     }
 
+    public User findUserByUsername(String username){
+        return userRepository.findUserByUsername(username).orElseThrow();
+    }
+
     public User addUser(User user){
         return userRepository.save(user);
     }
@@ -65,7 +69,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User depositFunds(User user, String accId, double amount, String memo){
-        user.getAccounts().stream().filter(a -> a.getUUID().equals(accId)).collect(Collectors.toList())
+        user.getAccounts().stream().filter(a -> a.getUuid().equals(accId)).collect(Collectors.toList())
                 .get(0).getTransactions().add(new Transaction(amount,memo));
 
         return userRepository.save(user);
@@ -73,7 +77,7 @@ public class UserService implements UserDetailsService {
 
     public User withdrowFunds(User user, String accId, double amount, String memo){
 
-        Account account = user.getAccounts().stream().filter(a -> a.getUUID().equals(accId)).collect(Collectors.toList())
+        Account account = user.getAccounts().stream().filter(a -> a.getUuid().equals(accId)).collect(Collectors.toList())
                 .get(0);
 
         if (accountService.getBalance(accId)<amount){
@@ -88,10 +92,10 @@ public class UserService implements UserDetailsService {
 
 
     public User transferFunds (User user, String fromAccId, String toAccId, double amount, String memo ){
-        Account fromAccount = user.getAccounts().stream().filter(a -> a.getUUID().equals(fromAccId)).collect(Collectors.toList())
+        Account fromAccount = user.getAccounts().stream().filter(a -> a.getUuid().equals(fromAccId)).collect(Collectors.toList())
                 .get(0);
 
-        Account toAccount =user.getAccounts().stream().filter(a -> a.getUUID().equals(toAccId)).collect(Collectors.toList())
+        Account toAccount =user.getAccounts().stream().filter(a -> a.getUuid().equals(toAccId)).collect(Collectors.toList())
                 .get(0);
         if (accountService.getBalance(fromAccId)<amount){
             return user;

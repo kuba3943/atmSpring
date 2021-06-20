@@ -33,7 +33,10 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         .formLogin()
                 .loginPage("/login").permitAll()
                 .defaultSuccessUrl("/",true)
-                .failureUrl("/login_error");
+                .failureUrl("/login_error")
+                .and()
+                .logout()
+                .logoutSuccessUrl("/login.html");
 
 
         http.cors();

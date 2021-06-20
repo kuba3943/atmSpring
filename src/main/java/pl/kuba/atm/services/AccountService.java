@@ -7,6 +7,7 @@ import pl.kuba.atm.databaseEntities.Transaction;
 import pl.kuba.atm.repositories.AccountRepository;
 import pl.kuba.atm.repositories.TransactionRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -25,10 +26,11 @@ public class AccountService {
         return balance;
     }
 
-    public Account addTransaction (double amount, String memo, String accId){
+    public Account addTransaction (double amount, String memo, LocalDate date, String accId){
         Transaction newTrans = new Transaction(amount,memo);
         Account account = accountRepository.findById(accId).orElseThrow();
 
+        transactionRepository.save(newTrans);
         account.getTransactions().add(newTrans);
         accountRepository.save(account);
         return account;
@@ -39,5 +41,8 @@ public class AccountService {
     }
 
 
+    public Account findAccountByUuid (String uuid){
+        return accountRepository.findById(uuid).orElseThrow();
+    }
 
 }
