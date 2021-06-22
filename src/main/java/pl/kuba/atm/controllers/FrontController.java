@@ -17,6 +17,7 @@ import pl.kuba.atm.services.TransactionService;
 import pl.kuba.atm.services.UserService;
 
 import java.nio.channels.AcceptPendingException;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -31,6 +32,9 @@ public class FrontController {
 
     @GetMapping("/")
     public String hello(@AuthenticationPrincipal UserDetails user, Model model) {
+
+
+        System.out.println(user.getUsername());
 
         User aUser = userService.findUserByUsername(user.getUsername());
         Bank bank = new Bank("JD-Bank");
@@ -61,7 +65,11 @@ public class FrontController {
     }
 
     @GetMapping("/account")
-    public String getAccounts(@AuthenticationPrincipal UserDetails user, Model model) {
+    public String getAccounts(@ModelAttribute User user, Model model) {
+
+        System.out.println(user.getUsername());
+
+
         User aUser = userService.findUserByUsername(user.getUsername());
 
         List<Account> accountList = aUser.getAccounts();
@@ -99,8 +107,10 @@ public class FrontController {
 
         if (action.equals("history")) {
             return "history";
-        } else if (action.equals("withdraw")) {
+        }  else if (action.equals("withdraw")) {
             return "withdraw";
+        } else if (action.equals("deposit")) {
+            return "deposit";
         } else {
             return "accountDetails";
         }
@@ -122,6 +132,45 @@ public class FrontController {
 
     }
 
+    @PostMapping("/deposit")
+    public String depositMoney(@ModelAttribute Transaction transaction, Model model, @RequestParam(value = "uuid", required = false) String uuid) {
+
+        accountService.addTransaction(transaction.getAmount(), transaction.getMemo(), transaction.getTimestamp(), uuid);
+        Account account = accountService.findAccountByUuid(uuid);
+
+        Double balance = accountService.getBalance(account.getUuid());
+
+        model.addAttribute("account", account);
+        model.addAttribute("balance", balance);
+        return "accountDetails";
+
+
+    }
+
+
+    @GetMapping("/addUser")
+    public String register(Model model) {
+
+        model.addAttribute("user", new User());
+
+        return "addUser";
+
+    }
+
+    @PostMapping("/addUser")
+    public String addUser(@ModelAttribute User user, Model model) {
+
+        Bank bank = bankService.findById(1L);
+
+        String userUUID = bank.getNewUserUUID();
+
+        user.setUuid(userUUID);
+
+        userService.addUser(user);
+
+        return "/login";
+
+    }
 
 
 }

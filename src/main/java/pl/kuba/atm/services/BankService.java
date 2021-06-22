@@ -14,4 +14,8 @@ public class BankService {
     public Bank createBank(Bank bank){
         return bankRepository.save(bank);
     }
+
+    public Bank findById(Long id){
+        return bankRepository.getById(id);
+    }
 }

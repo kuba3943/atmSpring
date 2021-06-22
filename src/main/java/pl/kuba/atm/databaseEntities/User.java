@@ -22,13 +22,16 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
+
 public class User implements UserDetails {
 
     private String username;
     private String firstName;
     private String lastName;
+
     @Id
     private String uuid;
+
     private String pin;
 
     @OneToMany
@@ -43,7 +46,7 @@ public class User implements UserDetails {
 
         this.uuid = theBank.getNewUserUUID();
 
-        this.accounts = new ArrayList<Account>();
+        this.accounts = new ArrayList<>();
 
         //log message
 

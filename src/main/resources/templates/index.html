@@ -17,7 +17,13 @@
             <div class="border-end bg-white" id="sidebar-wrapper">
                 <div class="sidebar-heading border-bottom bg-light">JD-Bank</div>
                 <div class="list-group list-group-flush">
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="account">Accounts</a>
+
+
+                    <form  method="get"  th:object="${user}"  action="#" th:action="@{/account}">
+                        <input type="hidden" class="form-check-input" th:value="${user.getUsername()}"  th:field = "*{username}">
+                    <button class="list-group-item list-group-item-action list-group-item-light p-3" type="submit">Accounts</button>
+                    </form>
+
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/logout">Logout</a>
                 </div>
             </div>

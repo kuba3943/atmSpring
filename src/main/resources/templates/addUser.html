@@ -16,9 +16,7 @@
     <!-- Sidebar-->
     <div class="border-end bg-white" id="sidebar-wrapper">
         <div class="sidebar-heading border-bottom bg-light">JD-Bank</div>
-        <div class="list-group list-group-flush">
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/logout">Logout</a>
-        </div>
+
     </div>
     <!-- Page content wrapper-->
     <div id="page-content-wrapper">
@@ -32,32 +30,53 @@
         </nav>
         <!-- Page content-->
         <div class="container-fluid">
-            <h1 class="mt-4">Your accounts:</h1>
-            <form class="form-signin" method="post" th:object="${choosenAccount}" action="#" th:action="@{/account}">
-            <div class="form-group">
-                <th:block th:each="account : ${accounts}">
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="RadioOptions"
-                                th:value="${account.getUuid()}"  th:field = "*{uuid}">
-                        <label class="form-check-label"
-                               th:text="'Name: ' + ${account.getName()} + ' | Account number: ' + ${account.getUuid()}"></label>
+            <form class="form-signin" method="post" th:object="${user}" action="#" th:action="@{/addUser}">
+                <div class="form-group">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <h4>First Name</h4>
+                            <input class="form-control" name="fn" id="fn" th:field="*{firstName}"
+                                   type="text" />
+                        </div>
                     </div>
-                </th:block>
-            </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <h4>Last Name</h4>
+                            <input class="form-control" name="ln" id="ln" th:field="*{lastName}"
+                                   type="text" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <h4>Last Name</h4>
+                            <input class="form-control" name="un" id="un" th:field="*{username}"
+                                   type="text" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <h4>Last Name</h4>
+                            <input class="form-control" name="pw" id="pw" th:field="*{pin}"
+                                   type="password" />
+                        </div>
+                    </div>
+
+
+
+                </div>
 
                 <br>
-                <button class="btn btn-lg btn-danger btn-block" type="submit">Show details</button>
+                <button class="btn btn-lg btn-danger btn-block" type="submit" >Register</button>
 
-            </form>
-
-            <br>
-
-            <form method="get" action="/addAcount">
-                <button class="btn btn-lg btn-danger btn-block" type="submit">Add new acount</button>
             </form>
 
 
         </div>
+
     </div>
 </div>
 <!-- Bootstrap core JS-->
