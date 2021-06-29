@@ -33,26 +33,26 @@
         </nav>
         <!-- Page content-->
         <div class="container-fluid">
-            <h1 class="mt-4">Account Details:</h1>
+        <form class="form-signin" method="post" th:object="${account}" action="#" th:action="@{/addAccount}">
+            <div class="form-group">
 
-           <p> <span th:text="'Name: ' + ${account.getName()} + ' | Account number: ' + ${account.getUuid()}"></span>  </p>
-            <p> <h3> Balance: </h3> </p>
+                <div class="form-row">
+                    <div class="form-group">
+                        <h4>Name:</h4>
+                        <input class="form-control" name="name" id="name" th:field="*{name}"
+                               type="text"  />
+                    </div>
+                </div>
 
-            <p> <span th:text = "${balance} + '$'"></span></p>
+            </div>
+
+            <br>
+            <button class="btn btn-lg btn-danger btn-block" type="submit" >Add</button>
+
+        </form>
 
 
-            <form class="form-signin" method="post" th:object="${account}" action="#" th:action="@{/accountDetails}">
-
-                <input type="hidden" class="form-check-input" th:value="${account.getUuid()}"  th:field = "*{uuid}">
-
-                <button class="btn btn-lg btn-primary btn-block" type="submit" th:name="action" th:value="history">Show transactions history</button>
-                <button class="btn btn-lg btn-success btn-block" type="submit" th:name="action" th:value="withdraw">Withdraw money</button>
-                <button class="btn btn-lg btn-dark btn-block" type="submit" th:name="action" th:value="deposit">Deposit money</button>
-                <button class="btn btn-lg btn-dark btn-block" type="submit" th:name="action" th:value="transfer">Transfer money</button>
-
-            </form>
-
-        </div>
+    </div>
     </div>
 </div>
 <!-- Bootstrap core JS-->

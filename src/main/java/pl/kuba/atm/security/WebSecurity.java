@@ -2,6 +2,7 @@ package pl.kuba.atm.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,13 +24,16 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests().antMatchers( "/addUser").permitAll()
+                .csrf().disable()
+                .authorizeRequests().antMatchers("/addUser").permitAll()
+                .and()
+                .authorizeRequests()
                 .anyRequest()
                 .authenticated()
                 .and()
                 .httpBasic()
                 .and()
-                .csrf().disable()
+
         .formLogin()
                 .loginPage("/login").permitAll()
                 .defaultSuccessUrl("/",true)
@@ -41,7 +45,11 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
         http.cors();
         http.headers().frameOptions().disable();
+
+
     }
+
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

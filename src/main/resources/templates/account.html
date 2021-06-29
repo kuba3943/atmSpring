@@ -42,6 +42,7 @@
                         <label class="form-check-label"
                                th:text="'Name: ' + ${account.getName()} + ' | Account number: ' + ${account.getUuid()}"></label>
                     </div>
+                    <br>
                 </th:block>
             </div>
 
@@ -52,7 +53,8 @@
 
             <br>
 
-            <form method="get" action="/addAcount">
+            <form method="get" action="/addAccount" th:object="${user}">
+                <input type="hidden" class="form-check-input" th:value="${user.getUsername()}"  th:field = "*{username}">
                 <button class="btn btn-lg btn-danger btn-block" type="submit">Add new acount</button>
             </form>
 

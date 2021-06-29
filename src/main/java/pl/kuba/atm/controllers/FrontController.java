@@ -2,7 +2,9 @@ package pl.kuba.atm.controllers;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +18,7 @@ import pl.kuba.atm.services.BankService;
 import pl.kuba.atm.services.TransactionService;
 import pl.kuba.atm.services.UserService;
 
+import javax.persistence.EntityNotFoundException;
 import java.nio.channels.AcceptPendingException;
 import java.security.Principal;
 import java.time.LocalDate;
@@ -37,10 +40,9 @@ public class FrontController {
         System.out.println(user.getUsername());
 
         User aUser = userService.findUserByUsername(user.getUsername());
-        Bank bank = new Bank("JD-Bank");
-        bankService.createBank(bank);
+
         model.addAttribute("user", aUser);
-        model.addAttribute("bank", bank);
+
         return "index";
     }
 
@@ -56,6 +58,15 @@ public class FrontController {
     @RequestMapping("/login")
     public String login() {
 
+
+        try{
+            System.out.println(bankService.findById(1L));
+        } catch (EntityNotFoundException a){
+            System.out.println("exception");
+            Bank bank = new Bank("JD-Bank");
+            bankService.createBank(bank);
+        }
+
         return "login";
     }
 
@@ -65,10 +76,7 @@ public class FrontController {
     }
 
     @GetMapping("/account")
-    public String getAccounts(@ModelAttribute User user, Model model) {
-
-        System.out.println(user.getUsername());
-
+    public String getAccounts(@AuthenticationPrincipal UserDetails user, Model model) {
 
         User aUser = userService.findUserByUsername(user.getUsername());
 
@@ -100,8 +108,11 @@ public class FrontController {
         Account accountHistory = accountService.findAccountByUuid(account.getUuid());
 
         Double balance = accountService.getBalance(accountHistory.getUuid());
+
+
         model.addAttribute("account", accountHistory);
         model.addAttribute("transaction", new Transaction());
+        model.addAttribute("toAccount", new Account());
         model.addAttribute("balance", balance);
         model.addAttribute("data", LocalDate.now());
 
@@ -111,7 +122,9 @@ public class FrontController {
             return "withdraw";
         } else if (action.equals("deposit")) {
             return "deposit";
-        } else {
+        } else if (action.equals("transfer")){
+            return "transfer";
+        }else {
             return "accountDetails";
         }
 
@@ -166,9 +179,38 @@ public class FrontController {
 
         user.setUuid(userUUID);
 
-        userService.addUser(user);
+        userService.addUser(user,bank);
 
         return "/login";
+
+    }
+
+
+    @GetMapping("/addAccount")
+    public String addAccount(@ModelAttribute User user, Model model) {
+
+        model.addAttribute("account", new Account());
+
+        return "/addAccount";
+
+    }
+
+    @PostMapping("/addAccount")
+    public String postAddAccount( @AuthenticationPrincipal UserDetails user, @ModelAttribute Account account, Model model) {
+
+        User user1 = userService.findUserByUsername(user.getUsername());
+
+        Bank bank = bankService.findById(1L);
+
+        account.setUuid(bank.getNewAccountUUID());
+
+        userService.addAccountToUser(user1, account, bank);
+
+
+        model.addAttribute("user", user1);
+
+
+        return "/index";
 
     }
 

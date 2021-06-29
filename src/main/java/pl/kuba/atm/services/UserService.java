@@ -6,9 +6,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.kuba.atm.databaseEntities.Account;
+import pl.kuba.atm.databaseEntities.Bank;
 import pl.kuba.atm.databaseEntities.Transaction;
 import pl.kuba.atm.databaseEntities.User;
 import pl.kuba.atm.repositories.AccountRepository;
+import pl.kuba.atm.repositories.BankRepository;
 import pl.kuba.atm.repositories.UserRepository;
 
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final AccountRepository accountRepository;
     private final AccountService accountService;
+    private final BankRepository bankRepository;
 
 
     @Override
@@ -34,16 +37,22 @@ public class UserService implements UserDetailsService {
         return userRepository.findUserByUsername(username).orElseThrow();
     }
 
-    public User addUser(User user){
-        return userRepository.save(user);
+    public User addUser(User user, Bank bank){
+
+        User userToSave = userRepository.save(user);
+
+        bank.getUsers().add(userToSave);
+
+        bankRepository.save(bank);
+
+        return userToSave;
     }
 
 
 
-    public User addAccountToUser(String uuid, Account account) {
+    public User addAccountToUser(User user, Account account, Bank bank) {
 
 
-        User user = userRepository.findById(uuid).orElseThrow();
 
         if (user.getAccounts()!=null){
             user.getAccounts().add(account);
@@ -51,8 +60,13 @@ public class UserService implements UserDetailsService {
             user.setAccounts(new ArrayList<>());
             user.getAccounts().add(account);
         }
-
+        accountRepository.save(account);
         userRepository.save(user);
+
+        bank.getAccounts().add(account);
+
+        bankRepository.save(bank);
+
         return user;
 
     }
