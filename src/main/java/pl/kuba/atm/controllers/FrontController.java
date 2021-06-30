@@ -37,9 +37,6 @@ public class FrontController {
     @GetMapping("/")
     public String hello(@AuthenticationPrincipal UserDetails user, Model model) {
 
-
-        System.out.println(user.getUsername());
-
         User aUser = userService.findUserByUsername(user.getUsername());
 
         model.addAttribute("user", aUser);
@@ -61,7 +58,7 @@ public class FrontController {
 
 
         try{
-            System.out.println(bankService.findById(1L));
+            bankService.findById(1L);
         } catch (EntityNotFoundException a){
             System.out.println("exception");
             Bank bank = new Bank("JD-Bank");
