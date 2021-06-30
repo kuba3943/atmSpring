@@ -40,7 +40,7 @@
                         <div class="form-group">
                             <h4>Amount:</h4>
                             <input class="form-control" name="amount" id="amount" th:field="*{amount}"
-                                   type="number" min="0" step="any" />
+                                   type="number" min="0" th:max="${balance}" step="1" />
                         </div>
                     </div>
 
@@ -52,11 +52,16 @@
                         </div>
                     </div>
 
-
-
-
+                    <div class="form-row">
+                        <div class="form-group">
+                            <h4>Number of account to transfer:</h4>
+                            <input class="form-control" name="toAccount"
+                                   type="text" />
+                        </div>
+                    </div>
 
                     <input type="hidden" class="form-check-input" th:value="${data}"  th:field = "*{timestamp}">
+
 
 
                 </div>

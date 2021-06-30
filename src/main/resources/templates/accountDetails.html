@@ -33,6 +33,7 @@
         </nav>
         <!-- Page content-->
         <div class="container-fluid">
+            <h1> <span  style="color: red" th:text = "${error}"></span></h1>
             <h1 class="mt-4">Account Details:</h1>
 
            <p> <span th:text="'Name: ' + ${account.getName()} + ' | Account number: ' + ${account.getUuid()}"></span>  </p>

@@ -23,6 +23,7 @@ import java.nio.channels.AcceptPendingException;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Log
 @Controller
@@ -90,15 +91,37 @@ public class FrontController {
 
 
     @PostMapping("/account")
-    public String chooseAction(@ModelAttribute Account choosenAccount, Model model) {
+    public String chooseAction(@AuthenticationPrincipal UserDetails user, @ModelAttribute Account choosenAccount, Model model) {
 
+
+        try {
+            accountService.findAccountByUuid(choosenAccount.getUuid());
+
+        } catch (RuntimeException e) {
+            User aUser = userService.findUserByUsername(user.getUsername());
+
+
+
+            List<Account> accountList = aUser.getAccounts();
+            model.addAttribute("choosenAccount", new Account());
+            model.addAttribute("accounts", accountList);
+            model.addAttribute("user", aUser);
+            model.addAttribute("error", "Choose account or create the new one.");
+
+            return "account";
+
+
+
+
+
+        }
         Account account = accountService.findAccountByUuid(choosenAccount.getUuid());
-
         Double balance = accountService.getBalance(account.getUuid());
 
         model.addAttribute("account", account);
         model.addAttribute("balance", balance);
         return "accountDetails";
+
 
     }
 
@@ -211,6 +234,41 @@ public class FrontController {
 
 
         return "/index";
+
+    }
+
+    @PostMapping("/transfer")
+    public String transferMoney(@ModelAttribute Transaction transaction, Model model, @RequestParam(value = "uuid", required = false) String uuid, @RequestParam(value = "toAccount", required = false) String toAccount) {
+
+        Bank bank = bankService.findById(1L);
+
+
+        try {
+            accountService.findAccountByUuid(toAccount);
+        } catch (NoSuchElementException e){
+            Account account = accountService.findAccountByUuid(uuid);
+
+            Double balance = accountService.getBalance(account.getUuid());
+
+            model.addAttribute("error", "Bad number of account, try again.");
+            model.addAttribute("account", account);
+            model.addAttribute("balance", balance);
+            return "accountDetails";
+        }
+
+        accountService.addTransaction(-1*transaction.getAmount(), transaction.getMemo(), transaction.getTimestamp(), uuid);
+        accountService.addTransaction(transaction.getAmount(), transaction.getMemo(), transaction.getTimestamp(), toAccount);
+        Account account = accountService.findAccountByUuid(uuid);
+
+        Double balance = accountService.getBalance(account.getUuid());
+
+        model.addAttribute("account", account);
+        model.addAttribute("balance", balance);
+        return "accountDetails";
+
+
+
+
 
     }
 
